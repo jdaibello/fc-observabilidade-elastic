@@ -135,3 +135,45 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
+APP_ID = 'codeprogress'
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': True,
+    'formatters': {
+        'verbose': {
+            'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
+        },
+    },
+    'handlers': {
+        'elasticapm': {
+            'level': 'WARNING',
+            'class': 'elasticapm.contrib.django.handlers.LoggingHandler',
+            # 'filename': Path(BASE_DIR).resolve().joinpath('logs', 'app.log'),
+            # 'maxBytes': 1024 * 1024 * 15,  # 15MB
+            # 'backupCount': 10,
+        },
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose'
+        }
+    },
+    'loggers': {
+        'django.db.backends': {
+            'level': 'ERROR',
+            'handlers': ['elasticapm'],
+            'propagate': True,
+        },
+        'mysite': {
+            'level': 'WARNING',
+            'handlers': ['elasticapm'],
+            'propagate': True,
+        },
+        # Log errors from the Elastic APM module to the console (recommended)
+        'elasticapm.errors': {
+            'level': 'ERROR',
+            'handlers': ['elasticapm'],
+            'propagate': True,
+        },
+    },
+}
